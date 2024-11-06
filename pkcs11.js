@@ -10,7 +10,7 @@ pkcs11.C_Initialize();
 try {
     //const module_info = pkcs11.C_GetInfo();
     const slots = pkcs11.C_GetSlotList(true)
-
+    console.log(slots)
     // console.log(module_info)
     const slot = slots[0]
     // console.log(slot)
@@ -32,8 +32,8 @@ try {
 
     const publicKeyTemplate = [
         { type: pkcs11js.CKA_CLASS, value: pkcs11js.CKO_PUBLIC_KEY},
-        { type: pkcs11js.CKA_TOKEN, value: false},
-        { type: pkcs11js.CKA_LABEL, value: "RSAKeyTest4"},
+        { type: pkcs11js.CKA_TOKEN, value: true},
+        { type: pkcs11js.CKA_LABEL, value: "RSAKeyTest"},
         { type: pkcs11js.CKA_PUBLIC_EXPONENT, value: Buffer.from([1, 0, 1])},
         { type: pkcs11js.CKA_MODULUS_BITS, value: 2048},
         { type: pkcs11js.CKA_VERIFY, value: true}
@@ -42,7 +42,7 @@ try {
     const privateKeyTemplate = [
         { type: pkcs11js.CKA_CLASS, value: pkcs11js.CKO_PRIVATE_KEY},
         { type: pkcs11js.CKA_TOKEN, value: false},
-        { type: pkcs11js.CKA_LABEL, value: "RSAKeyTest4"},
+        { type: pkcs11js.CKA_LABEL, value: "RSAKeyTest"},
         { type: pkcs11js.CKA_SIGN, value: true}
     ];
 
@@ -102,7 +102,7 @@ try {
 
     const decryptedData = Buffer.alloc(bufferSize);
     const decryptedLength = pkcs11.C_Decrypt(session, encryptedLength, decryptedData);
-    //console.log("Decrypted Data: ", decryptedLength.toString('utf8'));
+    console.log("Decrypted Data: ", decryptedLength.toString('utf8'));
 
 } catch(e){
     console.log(e);
