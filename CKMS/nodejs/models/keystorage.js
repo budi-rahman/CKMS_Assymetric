@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   KeyStorage.init({
     publickey: DataTypes.TEXT,
     privatekey: DataTypes.TEXT,
-    label: DataTypes.STRING
+    label: DataTypes.STRING,
+    keyHandle: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'KeyStorage',

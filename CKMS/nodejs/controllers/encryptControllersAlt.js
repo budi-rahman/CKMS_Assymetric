@@ -1,14 +1,15 @@
 const pkcs11js = require("pkcs11js");
 const pkcs11Helper = require('../helpers/pkcs11');
-//const { Keypair, UserData } = require('../models');
+const { UserData } = require('../models');
 
 class EncryptControllerAlt {
-    static encryptDataAlt(req, res) {
+    static async encryptDataAlt(req, res) {
         const { data, label } = req.body;
 
         if (!data || !label) {
             return res.status(400).json({ error: 'Data and label are required!' });
         }
+
 
         pkcs11Helper.initialize();
         const pkcs11 = pkcs11Helper.getInstance();
@@ -20,8 +21,14 @@ class EncryptControllerAlt {
             pkcs11.C_Login(session, pkcs11js.CKU_USER, '11223344');
 
             pkcs11.C_FindObjectsInit(session, [
-                { type: pkcs11js.CKA_LABEL, value: label },
-                { type: pkcs11js.CKA_CLASS, value: pkcs11js.CKO_PUBLIC_KEY }
+                { 
+                    type: pkcs11js.CKA_LABEL, 
+                    value: label 
+                },
+                { 
+                    type: pkcs11js.CKA_CLASS, 
+                    value: pkcs11js.CKO_PUBLIC_KEY 
+                }
             ]);
 
             const publicKeyHandle = pkcs11.C_FindObjects(session, 1)[0];
@@ -32,8 +39,23 @@ class EncryptControllerAlt {
             }
 
             const plainText = Buffer.from(JSON.stringify(data));
-            pkcs11.C_EncryptInit(session, { mechanism: pkcs11js.CKM_RSA_PKCS }, publicKeyHandle);
-            const encryptedData = pkcs11.C_Encrypt(session, plainText, Buffer.alloc(256));
+            pkcs11.C_EncryptInit(
+                session, { 
+                    mechanism: pkcs11js.CKM_RSA_PKCS 
+                }, 
+                publicKeyHandle
+            );
+            const encryptedData = pkcs11.C_Encrypt(
+                session, 
+                plainText, 
+                Buffer.alloc(256)
+            ).toString('hex');
+
+            console.log(encryptedData);
+            UserData.create({
+                email: encryptedData,
+
+            })
 
             pkcs11.C_Logout(session);
             pkcs11.C_CloseSession(session);

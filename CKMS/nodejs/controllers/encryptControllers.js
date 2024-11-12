@@ -1,4 +1,3 @@
-/**
 const pkcs11Helper = require('../helpers/pkcs11');
 const { Keypair, UserData } = require('../models');
 const pkcs11js = require('pkcs11js');
@@ -139,4 +138,3 @@ class EncryptionController {
 }
 
 module.exports = EncryptionController;
-*/
