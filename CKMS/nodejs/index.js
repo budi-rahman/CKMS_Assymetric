@@ -7,8 +7,8 @@ const app = express()
 const port = 3000
 const router = require('./routes')
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '100mb' }))
+app.use(express.urlencoded({ extended: true, limit: '100mb' }))
 app.use(router)
 
 app.listen(port, () => {

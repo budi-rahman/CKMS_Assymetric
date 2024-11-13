@@ -1,9 +1,10 @@
 require('dotenv').config();
 const pkcs11js = require("pkcs11js");
 const pkcs11Helper = require('../helpers/pkcs11');
+const { Keypair } = require('../models');
 
 class SymmmetricController {
-    static generateSymetricKey(req, res) {
+    static async generateSymetricKey(req, res) {
         const { label } = req.body;
 
         if(!label) {
@@ -58,6 +59,11 @@ class SymmmetricController {
                 { mechanism: pkcs11js.CKM_AES_KEY_GEN },
                 keyTemplate
             );
+
+            await Keypair.create({
+                label: label,
+                public: key.toString('hex'),
+            })
 
             pkcs11.C_Logout(session);
             pkcs11.C_CloseSession(session);
